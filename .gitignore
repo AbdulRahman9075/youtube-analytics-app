@@ -1,0 +1,24 @@
+#ignore private files
+backend/clientsecrets.json
+backend/rawResponse.txt
+backend/test.txt
+# Ignore environment files
+backend/.env
+backend/.env.*
+
+# Ignore dependencies
+backend/node_modules/
+
+# Ignore build output
+dist/
+build/
+
+# Ignore logs
+*.log
+
+# Ignore OS / editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
