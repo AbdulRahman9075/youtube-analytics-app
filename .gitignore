@@ -1,7 +1,10 @@
 #ignore private files
 backend/clientsecrets.json
-backend/rawResponse.txt
+#testfiles
+backend/rawResonse.txt
 backend/test.txt
+backend/helpers/categoryCounts.js
+backend/testhome.js
 # Ignore environment files
 backend/.env
 backend/.env.*

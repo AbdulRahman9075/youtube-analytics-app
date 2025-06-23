@@ -1,0 +1,88 @@
+{
+  "Music": [
+    "Music",
+    "Christian music",
+    "Hip hop",
+    "Classical music",
+    "Rock music",
+    "Country music",
+    "Electronic music",
+    "Reggae",
+    "Pop music",
+    "Jazz"
+  ],
+  "Gaming": [
+    "Gaming",
+    "Action game",
+    "Role-playing game",
+    "Strategy video game",
+    "Shooter game",
+    "Puzzle game",
+    "Racing video game",
+    "Sports game"
+  ],
+  "Science & Technology": [
+    "Technology",
+    "Science",
+    "Science and Technology"
+  ],
+  "Entertainment": [
+    "Humor",
+    "Movies",
+    "Performing arts",
+    "TV shows",
+    "Film"
+  ],
+  "Sports": [
+    "Sports",
+    "Baseball",
+    "Basketball",
+    "Boxing",
+    "Cricket",
+    "Football",
+    "Golf",
+    "Ice hockey",
+    "Motorsport",
+    "Tennis",
+    "Volleyball",
+    "Professional wrestling"
+  ],
+  "Lifestyle & Health": [
+    "Lifestyle",
+    "Fitness",
+    "Health",
+    "Pets",
+    "Beauty"
+  ],
+  "Food & Drink": [
+    "Food"
+  ],
+  "Travel & Tourism": [
+    "Tourism"
+  ],
+  "Fashion": [
+    "Fashion"
+  ],
+  "Vehicles": [
+    "Vehicles"
+  ],
+  "Education": [
+    "Knowledge",
+    "History",
+    "Society"
+  ],
+  "News & Politics": [
+    "News",
+    "Politics"
+    
+  ],
+  "Business":[
+    "Business"
+  ],
+  "Religion": [
+    "Religion"
+  ],
+  "Military": [
+    "Military"
+  ]
+}
