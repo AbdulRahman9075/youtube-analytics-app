@@ -1,5 +1,5 @@
 #ignore private files
-backend/clientsecrets.json
+backend/private
 #testfiles
 backend/rawResonse.txt
 backend/test.txt

@@ -1,12 +1,14 @@
 import express from 'express';
 import session from 'express-session';
+//import dotenv from 'dotenv';
 import controller from "../controllers/logincontroller.js";
-// import Workout from '../models/workoutmodel.js';
-// import {createWorkout,getWorkout,getWorkouts} from "../controllers/workoutcontroller.js";
+import {secretCode} from '../private/secretcode.js';
+
 const router = express.Router();
+//dotenv.config();
 
 router.use(session({
-secret: 'secretcode', // Replace with a strong secret
+secret: secretCode(), // Replace with a strong secret
 resave: false,
 saveUninitialized: false,
 }));
