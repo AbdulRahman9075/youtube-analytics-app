@@ -2,6 +2,7 @@
 import cron from 'node-cron';
 import { fetchAndProcessSubscriptions } from './controllers/homecontroller.js';
 import { loadTokens } from './helpers/utilities.js';
+import logger from './helpers/errorHandler.js'
 
 // Scheduler Expression Guide 
 // Description	                        Cron Expression	Notes
@@ -20,16 +21,19 @@ import { loadTokens } from './helpers/utilities.js';
 export const startScheduler = () => {
   // [TEST] set to : every 1 minute(s)
   cron.schedule('*/1 * * * *', async () => {
-    console.log("SUCCESS: [node-cron] Running scheduled YouTube data fetch...");
+    //console.log("SUCCESS: [node-cron] Running scheduled YouTube data fetch...");
+    logger.info("SUCCESS: [node-cron] Running scheduled YouTube data fetch...");
 
     try {
       const tokens = await loadTokens();
       await fetchAndProcessSubscriptions(tokens); // your main processing function
-      console.log("SUCCESS: [node-cron] Fetch and analysis complete.\n\n");
+      logger.info("SUCCESS: [node-cron] Fetch and analysis complete.\n\n");
+      //console.log("SUCCESS: [node-cron] Fetch and analysis complete.\n\n");
     } catch (error) {
-      console.error("FAILED:  [node-cron] Error during scheduled task:", error);
+      logger.error("FAILED:  [node-cron] Error during scheduled task:", error);
+      //console.error("FAILED:  [node-cron] Error during scheduled task:", error);
     }
   });
-
-  console.log("SUCCESS: [node-cron] Scheduler started: CHECK DURATION IN scheduler.js");
+  logger.info("SUCCESS: [node-cron] Scheduler started: CHECK DURATION IN scheduler.js");
+  //console.log("SUCCESS: [node-cron] Scheduler started: CHECK DURATION IN scheduler.js");
 };

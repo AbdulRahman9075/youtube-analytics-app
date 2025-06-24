@@ -5,21 +5,22 @@ import Channel from '../helpers/channel.js';
 
 import {saveTokens} from '../helpers/utilities.js'
 
-import {processNewChannels} from './analyticscontroller.js';
+import {processNewChannels} from '../helpers/analyse.js';
 import Subscriptions from '../models/datamodel.js';
 import Analytics from '../models/analyticsmodel.js'
 
-import { sendError } from "../helpers/errorHandler.js";
+import logger , {sendError} from "../helpers/errorHandler.js";
 
 export const home = async (req, res) => {
   try {
     const tokens = req.session.tokens;
     await saveTokens(tokens); // persist for later use
     await fetchAndProcessSubscriptions(tokens);
-    console.log("SUCCESS: EXECUTION COMPLETE");
+    logger.info("SUCCESS: EXECUTION COMPLETE");
+    //console.log("SUCCESS: EXECUTION COMPLETE");
     res.status(200).json({SUCCESS: "Execution complete" });
   } catch (error) {
-    console.error("FAILED: Error in /home route:", error);
+    //console.error("FAILED: Error in /home route:", error);
     sendError(res,500,"FAILED: Error in /home","INTERNAL_ROUTE_ERROR")
     //res.status(500).json({ error: "FAILED: Server error" });
     
@@ -38,20 +39,27 @@ const fetchAndProcessSubscriptions = async (tokens) => {
     let nextPageToken = null;
 
     do {
-      const subRes = await youtube.subscriptions.list({
-        part: 'snippet',
-        mine: true,
-        maxResults: 50,
-        pageToken: nextPageToken,
-      });
+      try{
+        const subRes = await youtube.subscriptions.list({
+          part: 'snippet',
+          mine: true,
+          maxResults: 50,
+          pageToken: nextPageToken,
+        });
+      
+      
+        subRes.data.items.forEach(sub => {
+          const channelId = sub.snippet.resourceId.channelId;
+          allSubscriptions.push(channelId);
+          publishedAtMap[channelId] = sub.snippet.publishedAt;
+        });
 
-      subRes.data.items.forEach(sub => {
-        const channelId = sub.snippet.resourceId.channelId;
-        allSubscriptions.push(channelId);
-        publishedAtMap[channelId] = sub.snippet.publishedAt;
-      });
-
-      nextPageToken = subRes.data.nextPageToken;
+        nextPageToken = subRes.data.nextPageToken;
+      }catch(error){
+        logger.error("YouTube API unreachable:", error.message);
+        //sendError(res,503,"Cannot reach YouTube API","YOUTUBE_UNAVAILABLE");
+        return;
+      }
     } while (nextPageToken);
 
     // Get channel details in batches of 50
@@ -76,7 +84,8 @@ const fetchAndProcessSubscriptions = async (tokens) => {
     //Error Checking
     for (const ch of channelObjects) {
       if (!(ch.subscribeAt instanceof Date)) {
-        console.warn("❌ Bad subscribeAt:", ch.title, ch.subscribeAt);
+        logger.warn(`❌ Bad subscribeAt:, ${ch.title}, ${ch.subscribeAt}`)
+        //console.warn("❌ Bad subscribeAt:", ch.title, ch.subscribeAt);
       }
     }
     //

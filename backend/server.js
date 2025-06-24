@@ -4,6 +4,7 @@ import loginRoutes from './routes/login.js';
 import homeRoutes from './routes/home.js'
 import mongoose from 'mongoose';
 import { startScheduler } from './scheduler.js';
+import logger from './helpers/errorHandler.js'
 
 dotenv.config();
 const app = express();
@@ -13,7 +14,10 @@ const app = express();
 app.use(express.json());
 
 app.use((req,res,next)=>{
-     console.log(req.path,req.method);
+     logger.info(`${req.path}  ${req.method}`); //logger
+     //logger.warn("Using deprecated feature: consider updating");
+     //logger.error("Unhandled exception occurred", err);
+     //console.log(req.path,req.method);
      next();
 });
 
@@ -23,18 +27,20 @@ app.use('/home',homeRoutes);
 
 mongoose.connect(process.env.MONGO_URI)
   .then(()=>{
-    console.log('Database is connected\n');
-
+    //console.log('SUCCESS:Database is connected\n');
+    logger.info('SUCCESS:Database is connected'); //logger
     //scheduller
     startScheduler();
 
     //server runs
     const PORT = process.env.PORT;
     app.listen(PORT, () => {
-      console.log(`SUCCESS: Server is running on port: ${PORT}`);
+      logger.info(`SUCCESS: Server is running on port: ${PORT}`); //logger
+      //console.log(`SUCCESS: Server is running on port: ${PORT}`);
     });
 
   })
   .catch((error)=>{
-    console.error("FAILED: to Connect Database");
+    logger.error("FAILED: to Connect Database"); //logger
+    //console.error("FAILED: to Connect Database");
   })

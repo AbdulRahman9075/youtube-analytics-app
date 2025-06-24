@@ -1,4 +1,5 @@
 import Analytics from '../models/analyticsmodel.js';
+import logger from './errorHandler.js';
 
 
 const sortBySubscribedAt = (arr)=>{
@@ -24,6 +25,7 @@ const calculateCategoryCounts = (channelArray)=> {
 // Count Highest Category
 const getHighestCategory = (countsarray) => {
   if (!countsarray || typeof countsarray !== 'object' || Object.keys(countsarray).length === 0) {
+    logger.error("INVALID OR EMPTY INPUT: countsarray must be a non-empty object.");
     throw new Error("Invalid or empty input: countsarray must be a non-empty object.");
   }
 

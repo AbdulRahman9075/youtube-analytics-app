@@ -5,7 +5,7 @@ import url from 'url';
 import crypto from 'crypto';
 import fs from 'fs';
 import oauth2Client from '../helpers/oauth.js';
-import {sendError} from '../helpers/errorHandler.js'
+import logger,{sendError} from '../helpers/errorHandler.js'
 const secret = JSON.parse(fs.readFileSync('../backend/private/clientsecrets.json', 'utf8'));
 /**
  * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI.
@@ -52,13 +52,13 @@ const recieveOAuthCallback = async (req, res) => {
   const q = url.parse(req.url, true).query;
 
   if (q.error) {
-    console.log('ERROR:' + q.error);
+    //console.log('ERROR:' + q.error);
     //return res.send('OAuth error: ' + q.error);
     return sendError(res,401,'OAuth error: ' + q.error,"OAUTH_FALIURE");
   }
 
   if (q.state !== req.session.state) {
-    console.log('ERROR: State mismatch. Possible CSRF attack');
+    //console.log('ERROR: State mismatch. Possible CSRF attack');
     //return res.end('State mismatch. Possible CSRF attack');
     return sendError(res,403,'State mismatch. Possible CSRF attack',"STATE_MISMATCH_OR_CRSF");
   }
@@ -78,7 +78,7 @@ const recieveOAuthCallback = async (req, res) => {
     res.redirect('/home');  //redirect to youtube api fetch call
   
   } catch (err) {
-    console.error('ERROR: OAuth callback error:', err);
+    //console.error('ERROR: OAuth callback error:', err);
 
     //res.status(500).send('Failed to handle OAuth callback');
     sendError(res,500,'Failed to handle OAuth callback','LOGIN_FALIURE')
@@ -121,7 +121,7 @@ const revokeTokenandLogout = async (req, res) => {
   });
 
   revokeReq.on('error', (error) => {
-    console.error('Revoke request error:', error);
+    //console.error('Revoke request error:', error);
     sendError(res,502,"Error revoking access token","REVOKE_FAILED");
     //res.status(500).send('Error revoking access token');
   });
