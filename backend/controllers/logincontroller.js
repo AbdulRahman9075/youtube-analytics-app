@@ -75,7 +75,7 @@ const recieveOAuthCallback = async (req, res) => {
     userCredential = tokens;
     
     
-    res.redirect('/home');  //redirect to youtube api fetch call
+    res.redirect('/api/home');  //redirect to youtube api fetch call
   
   } catch (err) {
     //console.error('ERROR: OAuth callback error:', err);

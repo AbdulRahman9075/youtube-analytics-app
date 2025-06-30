@@ -21,8 +21,13 @@ app.use((req,res,next)=>{
      next();
 });
 
-app.use('/',loginRoutes);
-app.use('/home',homeRoutes);
+
+app.use('/api',loginRoutes);
+app.use('/api/home',homeRoutes);
+
+app.get('/', (req, res) => {
+  res.redirect('/api');
+});
 //db
 
 mongoose.connect(process.env.MONGO_URI)

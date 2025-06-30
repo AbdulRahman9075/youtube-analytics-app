@@ -1,22 +1,21 @@
 #ignore private files
-backend/private
+private
 #testfiles
-backend/rawResonse.txt
-backend/test.txt
-backend/helpers/categoryCounts.js
-backend/testhome.js
+rawResonse.txt
+test.txt
 # Ignore environment files
-backend/.env
-backend/.env.*
+.env
+.env.*
 
 # Ignore dependencies
-backend/node_modules/
+node_modules/
 
 # Ignore build output
 dist/
 build/
 
 # Ignore logs
+logs/
 *.log
 
 # Ignore OS / editor files
