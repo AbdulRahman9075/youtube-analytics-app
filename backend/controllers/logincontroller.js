@@ -1,4 +1,4 @@
-// remove old res.status comments if no error
+// IMPORTANT!!:  CHANGE LINE 78 to route only when deploying
 
 import https from 'https';
 import url from 'url';
@@ -74,8 +74,8 @@ const recieveOAuthCallback = async (req, res) => {
     //Save globally if still needed
     userCredential = tokens;
     
-    
-    res.redirect('/api/home');  //redirect to youtube api fetch call
+    // res.redirect('/api/home');   //testing in backend-only
+    res.redirect('http://localhost:3000/home'); //redirect to FRONTEND
   
   } catch (err) {
     //console.error('ERROR: OAuth callback error:', err);

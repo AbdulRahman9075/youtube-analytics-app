@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import loginRoutes from './routes/login.js';
 import homeRoutes from './routes/home.js'
+import subscriptionRoutes from './routes/subscription.js'
 import mongoose from 'mongoose';
 import { startScheduler } from './scheduler.js';
 import logger from './helpers/errorHandler.js'
@@ -24,6 +25,7 @@ app.use((req,res,next)=>{
 
 app.use('/api',loginRoutes);
 app.use('/api/home',homeRoutes);
+app.use('/api/subscriptions',subscriptionRoutes);
 
 app.get('/', (req, res) => {
   res.redirect('/api');

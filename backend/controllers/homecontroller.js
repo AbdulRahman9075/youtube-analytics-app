@@ -7,18 +7,25 @@ import {saveTokens} from '../helpers/utilities.js'
 
 import {processNewChannels} from '../helpers/analyse.js';
 import Subscriptions from '../models/datamodel.js';
-import Analytics from '../models/analyticsmodel.js'
+import Analytics from '../models/analyticsmodel.js';
 
 import logger , {sendError} from "../helpers/errorHandler.js";
+
+let CHANNELS = null;
+let LAST_ANALTICS_ENTRY = null;
 
 export const home = async (req, res) => {
   try {
     const tokens = req.session.tokens;
     await saveTokens(tokens); // persist for later use
     await fetchAndProcessSubscriptions(tokens);
-    logger.info("SUCCESS: EXECUTION COMPLETE");
-    //console.log("SUCCESS: EXECUTION COMPLETE");
-    res.status(200).json({SUCCESS: "Execution complete" });
+    logger.info("SUCCESS: EXECUTION COMPLETE REDIRECTED TO HOME");
+    
+    // make global variables of any current/prev channel info
+    // needed and send as response
+
+    res.status(200).json(LAST_ANALTICS_ENTRY); // Non graphical [last entry of analytics]
+
   } catch (error) {
     //console.error("FAILED: Error in /home route:", error);
     sendError(res,500,"FAILED: Error in /home","INTERNAL_ROUTE_ERROR")
@@ -26,6 +33,40 @@ export const home = async (req, res) => {
     
   }
 };
+
+const setChannels = (channels) => {
+  CHANNELS = channels;
+}
+
+export const sendCurrentSubscriptions = async (req,res) => {
+  try {
+
+    res.status(200)
+       .set('Content-Type', 'application/json')
+       .send(JSON.stringify(CHANNELS,null,1)); 
+    logger.info("SUCCESS: Subscription response sent");
+
+  } catch (error) {
+    //console.error("FAILED: Error in /home route:", error);
+    sendError(res,500,"FAILED: Error in /subscriptions","INTERNAL_ROUTE_ERROR")
+    //res.status(500).json({ error: "FAILED: Server error" });
+    
+  }
+}
+
+const getLastEntry = async (Model) => {
+  try {
+    LAST_ANALTICS_ENTRY = await Model.findOne().sort({ date: -1 }).exec();
+
+    //console.log(LAST_ANALTICS_ENTRY);
+    
+  } catch (error) {
+    //console.error("Error fetching last entry:", error);
+    logger.error(`FAILED: Error fetching last entry`,error);
+    throw error;
+  }
+};
+
 
 const fetchAndProcessSubscriptions = async (tokens) => {
   
@@ -100,6 +141,13 @@ const fetchAndProcessSubscriptions = async (tokens) => {
     await processNewChannels(channelObjects,previousChannels);
     channelObjects.sort((a, b) => a.subscribeAt - b.subscribeAt);
 
+    // GET LAST DATABASE ENTRY
+    getLastEntry(Analytics);
+    //MAKE CHANNELS GLOBALLY AVAILABLE
+    setChannels(channelObjects);
+
+
+    
     //Store to DB
 
     await Subscriptions.findOneAndUpdate(
