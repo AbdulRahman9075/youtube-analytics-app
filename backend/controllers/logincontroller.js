@@ -1,4 +1,4 @@
-// IMPORTANT!!:  CHANGE LINE 78 to route only when deploying
+// IMPORTANT!!:  CHANGE LINE 78 and LINE 132 to route only when deploying
 
 import https from 'https';
 import url from 'url';
@@ -115,7 +115,9 @@ const revokeTokenandLogout = async (req, res) => {
 
     googleRes.on('end', () => {
       req.session.destroy(() => {
-        res.send('Access token revoked and session ended. You have been logged out.');
+        logger.info("SUCCESS: Access token Revoked and Session Ended.");
+        res.redirect('http://localhost:3000/');  // REDIRECT TO FRONTEND LOGIN PAGE
+        
       });
     });
   });

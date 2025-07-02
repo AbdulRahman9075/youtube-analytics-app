@@ -12,7 +12,7 @@ import Analytics from '../models/analyticsmodel.js';
 import logger , {sendError} from "../helpers/errorHandler.js";
 
 let CHANNELS = null;
-let LAST_ANALTICS_ENTRY = null;
+let ALL_ENTRIES = null;
 
 export const home = async (req, res) => {
   try {
@@ -24,7 +24,7 @@ export const home = async (req, res) => {
     // make global variables of any current/prev channel info
     // needed and send as response
 
-    res.status(200).json(LAST_ANALTICS_ENTRY); // Non graphical [last entry of analytics]
+    res.status(200).json(ALL_ENTRIES);
 
   } catch (error) {
     //console.error("FAILED: Error in /home route:", error);
@@ -54,15 +54,13 @@ export const sendCurrentSubscriptions = async (req,res) => {
   }
 }
 
-const getLastEntry = async (Model) => {
+const getAllEntries = async (Model) => {
   try {
-    LAST_ANALTICS_ENTRY = await Model.findOne().sort({ date: -1 }).exec();
-
-    //console.log(LAST_ANALTICS_ENTRY);
-    
+    ALL_ENTRIES = await Model.find().sort({ date: 1 }).exec(); // 1 = ascending
+    logger.info("SUCCESS:Fetched all Entries");
+    //console.log(entries);
   } catch (error) {
-    //console.error("Error fetching last entry:", error);
-    logger.error(`FAILED: Error fetching last entry`,error);
+    logger.error(`FAILED: Error fetching entries`, error);
     throw error;
   }
 };
@@ -136,13 +134,13 @@ const fetchAndProcessSubscriptions = async (tokens) => {
     const previousChannels = previousDoc?.channels || [];
 
     // [TEST] clear database
-    //await Analytics.deleteMany({});
+    // await Analytics.deleteMany({});
     
     await processNewChannels(channelObjects,previousChannels);
     channelObjects.sort((a, b) => a.subscribeAt - b.subscribeAt);
 
     // GET LAST DATABASE ENTRY
-    getLastEntry(Analytics);
+    getAllEntries(Analytics);
     //MAKE CHANNELS GLOBALLY AVAILABLE
     setChannels(channelObjects);
 
