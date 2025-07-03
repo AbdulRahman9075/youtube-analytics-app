@@ -1,7 +1,7 @@
 import { Box, IconButton,Typography } from '@mui/material';
-import MyLogo from '../assets/logo-nobg.png';     
-import Googlelogo from '../assets/googleicon.png';  
-import Color from '../assets/colors.js';
+import MyLogo from '../../assets/logo-nobg.png';     
+import Googlelogo from '../../assets/googleicon.png';  
+import Color from '../../assets/colors.js';
 
 const Login = () => {
   const redirectToOauth = () => {

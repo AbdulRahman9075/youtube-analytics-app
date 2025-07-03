@@ -1,7 +1,7 @@
-import useAbortableFetch from '../hooks/useFetch';
-import SimpleBackdrop from './backdrop.js';
-import Navbar from './navbar.js';
-import Error from './error.js';
+import useAbortableFetch from '../../hooks/useFetch.js';
+import SimpleBackdrop from '../utils/backdrop.js';
+import Navbar from '../utils/navbar.js';
+import Error from '../utils/error.js';
 import {Paper,Box,useMediaQuery, Typography} from '@mui/material';
 import { styled } from '@mui/material/styles';
 

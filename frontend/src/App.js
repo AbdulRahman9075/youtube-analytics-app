@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route,Navigate} from 'react-router-dom';
 import { CssBaseline } from '@mui/material';
-import Home from './components/home.js';
-import Subscriptions from './components/subscriptions.js';
-import NotFound from './components/notfound.js';
-import Logout from './components/logout.js';
-import Login from './components/login.js';
+import Home from './components/pages/home.js';
+import Subscriptions from './components/pages/subscriptions.js';
+import NotFound from './components/pages/notfound.js';
+import Logout from './components/pages/logout.js';
+import Login from './components/pages/login.js';
 
 
 

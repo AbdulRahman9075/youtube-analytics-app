@@ -1,5 +1,5 @@
 import {Box,Button,Typography} from '@mui/material';
-import Navbar from "./navbar.js";
+import Navbar from "../utils/navbar.js";
 import { Link } from 'react-router-dom';
 
 function NotFound() {

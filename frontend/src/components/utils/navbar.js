@@ -13,8 +13,8 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import MyLogo from '../assets/logo-nobg.png';
-import Color from '../assets/colors.js';
+import MyLogo from '../../assets/logo-nobg.png';
+import Color from '../../assets/colors.js';
 
 
 

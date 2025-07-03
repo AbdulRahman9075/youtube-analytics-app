@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import SimpleBackdrop from './backdrop.js';
+import SimpleBackdrop from '../utils/backdrop.js';
 
 
 const Logout = () => {

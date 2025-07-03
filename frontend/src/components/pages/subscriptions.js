@@ -1,10 +1,10 @@
-import useAbortableFetch from '../hooks/useFetch';
-import SimpleBackdrop from './backdrop.js';
-import Error from './error.js';
-import Navbar from './navbar.js';
+import useAbortableFetch from '../../hooks/useFetch.js';
+import SimpleBackdrop from '../utils/backdrop.js';
+import Error from '../utils/error.js';
+import Navbar from '../utils/navbar.js';
 import {Box,IconButton,Avatar} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import Color from '../assets/colors.js';
+import Color from '../../assets/colors.js';
 function Subscriptions() {
   
   
