@@ -14,7 +14,7 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import MyLogo from '../../assets/logo-nobg.png';
-import Color from '../../assets/colors.js';
+import Constant from '../../assets/constants.js';
 
 
 
@@ -153,12 +153,12 @@ function Navbar() {
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{
                  p: 0,
-                 backgroundColor: Color.linkColor, 
+                 backgroundColor: Constant.linkColor, 
                  '&:hover': {
-                  backgroundColor: Color.linkHoverColor, 
+                  backgroundColor: Constant.linkHoverColor, 
                  },
                  '&:active': {
-                  backgroundColor: Color.linkActiveColor, 
+                  backgroundColor: Constant.linkActiveColor, 
                  },
                  padding: 0.8
                  }}>

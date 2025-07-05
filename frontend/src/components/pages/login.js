@@ -1,7 +1,7 @@
 import { Box, IconButton,Typography } from '@mui/material';
 import MyLogo from '../../assets/logo-nobg.png';     
 import Googlelogo from '../../assets/googleicon.png';  
-import Color from '../../assets/colors.js';
+import Constant from '../../assets/constants.js';
 
 const Login = () => {
   const redirectToOauth = () => {
@@ -49,12 +49,12 @@ const Login = () => {
         sx={{
           mt: 20,
           color: 'inherit',
-          backgroundColor: Color.linkColor, 
+          backgroundColor: Constant.linkColor, 
           '&:hover': {
-          backgroundColor: Color.linkHoverColor, 
+          backgroundColor: Constant.linkHoverColor, 
           },
           '&:active': {
-          backgroundColor: Color.linkActiveColor, 
+          backgroundColor: Constant.linkActiveColor, 
           },
         }}
       >

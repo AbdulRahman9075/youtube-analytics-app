@@ -4,6 +4,8 @@ import Navbar from '../utils/navbar.js';
 import Error from '../utils/error.js';
 import {Paper,Box,useMediaQuery, Typography} from '@mui/material';
 import { styled } from '@mui/material/styles';
+import MultiLineChart from '../charts/multiLineChart.js';
+import SingleLineChart from '../charts/singleLineChart.js';
 
 
 
@@ -82,6 +84,7 @@ const valueTypographySx = {
   width: '100%',
   height: '100%',
   lineHeight: '45vh',
+  padding: 5
   }));
 
   return (
@@ -168,8 +171,12 @@ const valueTypographySx = {
                 gap: 5,
               }}
             >
-              <GraphItem sx={{ flex: 1 }}>GraphItem 1</GraphItem>
-              <GraphItem sx={{ flex: 1 }}>GraphItem 2</GraphItem>
+              <GraphItem sx={{ flex: 1 }}>
+                <MultiLineChart data={data}/>
+              </GraphItem>
+              <GraphItem sx={{ flex: 1 }}>
+                <SingleLineChart data={data}/>
+              </GraphItem>
             </Box>
           </Box>
 
