@@ -1,5 +1,5 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import { PORT,MONGO_URI } from './config.js';
 import path from 'path';
 import loginRoutes from './routes/login.js';
 import homeRoutes from './routes/home.js';
@@ -7,11 +7,9 @@ import subscriptionRoutes from './routes/subscription.js';
 import userRoutes from './routes/user.js';
 import logRoute from './routes/log.js';
 import mongoose from 'mongoose';
-//import { startScheduler } from './routes/scheduler.js';
 import logger from './helpers/errorHandler.js';
 import schedulerRoute from './routes/scheduler.js';
 
-dotenv.config();
 const app = express();
 const __dirname = path.resolve();
 
@@ -52,11 +50,10 @@ app.get(/^\/(?!api).*/, (req, res) => {
 
 
 //db
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(MONGO_URI)
   .then(()=>{
     logger.info('SUCCESS:Database is connected'); //logger
     //server runs
-    const PORT = process.env.PORT;
     app.listen(PORT, () => {
       logger.info(`SUCCESS: Server is running on port: ${PORT}`); //logger
     });

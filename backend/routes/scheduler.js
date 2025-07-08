@@ -1,35 +1,14 @@
-// Scheduler Expression Guide 
-// Description	                        Cron Expression	Notes
-// Every minute	      * * * * *	        Too frequent for most analytics tasks
-// Every 5 minutes	  */5 * * * *	      Good for polling APIs
-// Every 15 minutes	  */15 * * * *	    Common for small-scale syncs
-// Every hour	        0 * * * *	        At the top of every hour
-// Every 6 hours	    0 */6 * * *	      Good for medium-frequency tasks
-// Every 12 hours	    0 */12 * * *	    Ideal for light analytics fetch
-// daily at 00:00	    0 0 * * *	        Clean daily run at 00:00
-// daily at 6 AM	    0 6 * * *	        Adjust for time zone or user activity
-// Twice daily (6 AM and 6 PM)	    0 6,18 * * *	    Good balance for global user base
-// Every Monday at 8 AM (weekly)	  0 8 * * 1	        Weekly report on Monday morning
-// First of every month at 1 AM	    0 1 1 * *	        Monthly summary tasks
-
-// IMPORTANT: CHANGE SCHEDULER TIME BEFORE DEPLOYMENT
 import express from 'express';
 import User from '../models/usermodel.js';
 import { fetchAndProcessSubscriptions } from '../controllers/homecontroller.js';
 import logger from '../helpers/errorHandler.js';
 import { oauth2Client } from '../helpers/oauth.js';
-import { schedulerCode } from '../private/secretcode.js';
 import { sendError } from '../helpers/errorHandler.js';
-
+import { SCHEDULER_SECRET } from '../config.js';
 const router = express.Router();
 
 router.get('/run-scheduler', async (req, res) => {
-  const SECRET = schedulerCode();
-  console.log(`SECRET=${SECRET}`);
-  console.log(`RECIEVED=${req.query.key}`);
-   if (req.query.key !== SECRET) {
-    console.log(`SECRET=${SECRET}`);
-    console.log(`RECIEVED=${req.query.key}`);
+   if (req.query.key !== SCHEDULER_SECRET) {
     return sendError(res,403,"Unauthorised","INVALID_TOKENS");
     
   }

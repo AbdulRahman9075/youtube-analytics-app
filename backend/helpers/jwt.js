@@ -1,7 +1,5 @@
 import jwt from 'jsonwebtoken';
-import {jwtCode} from '../private/secretcode.js';
-
-const JWT_SECRET = jwtCode();
+import { JWT_SECRET } from '../config.js';
 
 export function generateToken(user) {
   return jwt.sign(
