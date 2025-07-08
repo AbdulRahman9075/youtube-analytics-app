@@ -7,7 +7,7 @@ export default class Channel {
     this.customUrl = apiData.snippet.customUrl;
     this.subscribeAt = subscribedAt ? new Date(subscribedAt) : null;
     this.country = apiData.snippet.country;
-    this.keywords = (apiData.brandingSettings?.channel?.keywords || '').split(' '); //check formatting
+    this.keywords = (apiData.brandingSettings?.channel?.keywords || '').split(' ');
     this.categories = ((apiData.topicDetails?.topicCategories || [])
     .map(url =>decodeURIComponent(url.split('/').pop().replace(/_/g, ' ')))).sort();
     this.banner = apiData.brandingSettings?.image?.bannerExternalUrl || null;

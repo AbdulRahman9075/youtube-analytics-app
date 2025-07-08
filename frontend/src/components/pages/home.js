@@ -1,3 +1,6 @@
+import {useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+
 import useAbortableFetch from '../../hooks/useFetch.js';
 import SimpleBackdrop from '../utils/backdrop.js';
 import Navbar from '../utils/navbar.js';
@@ -45,6 +48,20 @@ const valueTypographySx = {
   const isLargeScreen = useMediaQuery('(min-width: 1024px)'); //>1024
 
   //Body
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get('token');
+
+    if (token) {
+      localStorage.setItem('token', token);
+      // Clean the URL by navigating to /home without query
+      navigate('/home', { replace: true });
+    }
+  }, [navigate]);
+
+
   const { data, loading, error } = useAbortableFetch('/api/home');
 
   if (loading){ 
@@ -58,7 +75,7 @@ const valueTypographySx = {
     return <Error message={error} />
   };
 
-  if (data.success){
+  if (data && data.success === false){
     return <Error message={data.error.message} />
   }
 
@@ -87,10 +104,11 @@ const valueTypographySx = {
   padding: 5
   }));
 
+
   return (
     <>
-    {data && (
     <div>
+      
       <Navbar/>
         <Box>  
 
@@ -164,9 +182,9 @@ const valueTypographySx = {
             <Box
               sx={{
                 display: 'flex',
-                flexDirection: isSmallScreen ? 'column' : 'row',
-                width: isLargeScreen ? '90%' : '100%',
-                marginLeft: isLargeScreen ? '5%':0,
+                flexDirection:'column',
+                width: '100%',
+                marginLeft: 0,
                 padding: 3,
                 gap: 5,
               }}
@@ -184,10 +202,10 @@ const valueTypographySx = {
         </Box>
       
     </div>
-    )}
+    {/* )} */}
   </>
   );
-
+  
 }
 
 export default Home;

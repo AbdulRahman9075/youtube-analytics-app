@@ -1,3 +1,6 @@
+import {useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
+
 import useAbortableFetch from '../../hooks/useFetch.js';
 import SimpleBackdrop from '../utils/backdrop.js';
 import Error from '../utils/error.js';
@@ -16,6 +19,18 @@ function Subscriptions() {
   const isLargeScreen = useMediaQuery('(min-width: 1024px)'); //>1024
   //Body
 
+  const navigate = useNavigate();
+  
+    useEffect(() => {
+      const params = new URLSearchParams(window.location.search);
+      const token = params.get('token');
+  
+      if (token) {
+        localStorage.setItem('token', token);
+        // Clean the URL by navigating to /home without query
+        navigate('/subscriptions', { replace: true });
+      }
+  }, [navigate]);
   const { data, loading, error } = useAbortableFetch('/api/subscriptions');
 
   if (loading){ 
@@ -29,11 +44,12 @@ function Subscriptions() {
     return <Error message={error} />
   };
 
-  if (data.success){
+  if (data && data.success === false){
     return <Error message={data.error.message} />
   }
-
+  
   //PieChart
+
   const calculateCategoryCounts = (channelArray)=> {
     const categoryCounts = {};
 
@@ -63,7 +79,7 @@ function Subscriptions() {
 
 
 
-  //const valueFormatter = (item) => `${item.value} %`;
+  const valueFormatter = (item) => `${item.value} %`;
 
   const GraphItem = styled((props) => <Paper elevation={13} {...props} />)(({ theme }) => ({
   ...theme.typography.body2,
@@ -76,7 +92,7 @@ function Subscriptions() {
   padding: 5,
   }));
 
-  // Table
+  // // Table
   const columns = [
     { field: 'id', headerName: '#', width: 70 },
     {

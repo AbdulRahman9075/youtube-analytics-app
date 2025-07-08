@@ -2,7 +2,6 @@ import winston from 'winston';
 import fs from 'fs';
 import path from 'path';
 
-// Ensure the logs directory exists
 const logDir = path.resolve('logs');
 if (!fs.existsSync(logDir)) {
   fs.mkdirSync(logDir);
@@ -12,6 +11,7 @@ winston.addColors({
   warn: 'yellow',
   info: 'green'
 });
+
 const logger = winston.createLogger({
   level: 'info', // logs 'info' and everything more severe
   format: winston.format.combine(

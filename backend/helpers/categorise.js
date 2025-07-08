@@ -20,8 +20,8 @@ for (const [parent, children] of Object.entries(raw)) {
 
 // Priority list of child topic words
 const CHILD_PRIORITY = [
-    "History",
-    "Society",
+    "Humour",
+    "Humor",
     "Music",
     "Christian music",
     "Hip hop",
@@ -32,6 +32,8 @@ const CHILD_PRIORITY = [
     "Reggae",
     "Pop music",
     "Jazz",
+    "Society",
+    "History",
     "Gaming",
     "Action game",
     "Role-playing game",
@@ -43,11 +45,8 @@ const CHILD_PRIORITY = [
     "Science",
     "Science and Technology",
     "Technology",
-    "Humor",
     "Movies",
     "Performing arts",
-    "TV shows",
-    "Film",
     "Sports",
     "Baseball",
     "Basketball",
@@ -75,6 +74,11 @@ const CHILD_PRIORITY = [
     "Religion",
     "Military",
     "Knowledge",
+    "Lifestyle (sociology)",
+    "Hobby",
+    "TV shows",
+    "Film",
+    "Entertainment"
 
   ];
 

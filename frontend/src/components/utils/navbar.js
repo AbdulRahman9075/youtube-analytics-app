@@ -1,21 +1,11 @@
 import {Link } from 'react-router-dom';
-
 import {useState} from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
+import {AppBar,Box,Toolbar,IconButton,Typography,Menu,Container,Avatar,Button,Tooltip,MenuItem} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
-import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
-import MyLogo from '../../assets/logo-nobg.png';
 import Constant from '../../assets/constants.js';
-
+import { useUser } from '../../hooks/userContext.js';
+import SimpleBackdrop from './backdrop.js';
+import MyLogo from  '../../assets/logo-nobg.png' 
 
 
 const pages = [
@@ -23,14 +13,20 @@ const pages = [
   { name: 'Subscriptions', path: '/subscriptions' }
 ];
 const settings = [
-  { name: 'Account', path: '/home' },   // !! change to /account when feature is added !!
   { name: 'Logout', path: '/logout' }
 ];
 
 function Navbar() {
+
   const [anchorElNav, setAnchorElNav] = useState(null);
   const [anchorElUser, setAnchorElUser] = useState(null);
 
+  const { profilePhoto, loading } = useUser();
+  if (loading){
+    return <SimpleBackdrop/>;
+  }
+  
+  
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -50,16 +46,16 @@ function Navbar() {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          {/* <Box
+          <Box
             component="img"
             src={MyLogo}
-            alt="My Logo"
+            alt="App Logo"
             sx={{
               display: { xs: 'none', md: 'flex' },
               mr: 1,
               height: 24, // adjust size as needed
             }}
-          /> */}
+          />
           <Typography
             variant="h6"
             noWrap
@@ -162,7 +158,7 @@ function Navbar() {
                  },
                  padding: 0.8
                  }}>
-                <Avatar alt="App Logo" src={MyLogo} /> {/*account image */}
+                <Avatar alt="App Logo" src={profilePhoto} /> {/*account image */}
               </IconButton>
             </Tooltip>
             <Menu

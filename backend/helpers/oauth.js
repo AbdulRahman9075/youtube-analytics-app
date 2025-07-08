@@ -6,7 +6,8 @@ const secret = JSON.parse(fs.readFileSync('../backend/private/clientsecrets.json
 const oauth2Client = new google.auth.OAuth2(
   secret.web.client_id,
   secret.web.client_secret,
-  secret.web.redirect_uris[0]
+  secret.web.redirect_uris[0],
 );
 
+export { oauth2Client };   //newline
 export default oauth2Client;

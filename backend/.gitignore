@@ -1,12 +1,8 @@
 #ignore private files
 private
-#testfiles
-rawResonse.txt
-test.txt
 # Ignore environment files
 .env
 .env.*
-
 # Ignore dependencies
 node_modules/
 

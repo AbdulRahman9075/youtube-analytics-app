@@ -1,14 +1,19 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import path from 'path';
 import loginRoutes from './routes/login.js';
-import homeRoutes from './routes/home.js'
-import subscriptionRoutes from './routes/subscription.js'
+import homeRoutes from './routes/home.js';
+import subscriptionRoutes from './routes/subscription.js';
+import userRoutes from './routes/user.js';
+import logRoute from './routes/log.js';
 import mongoose from 'mongoose';
-import { startScheduler } from './scheduler.js';
-import logger from './helpers/errorHandler.js'
+//import { startScheduler } from './routes/scheduler.js';
+import logger from './helpers/errorHandler.js';
+import schedulerRoute from './routes/scheduler.js';
 
 dotenv.config();
 const app = express();
+const __dirname = path.resolve();
 
 //middleware
 
@@ -16,38 +21,47 @@ app.use(express.json());
 
 app.use((req,res,next)=>{
      logger.info(`${req.path}  ${req.method}`); //logger
-     //logger.warn("Using deprecated feature: consider updating");
-     //logger.error("Unhandled exception occurred", err);
-     //console.log(req.path,req.method);
      next();
 });
 
+// app.get('/', function (req, res) {
+//   res.sendFile(path.join(__dirname, 'build', 'index.html'));
+// });
+
 
 app.use('/api',loginRoutes);
+
 app.use('/api/home',homeRoutes);
 app.use('/api/subscriptions',subscriptionRoutes);
+app.use('/api/user', userRoutes);
+app.use('/api', logRoute);
+app.use('/api/scheduler', schedulerRoute);
 
-app.get('/', (req, res) => {
-  res.redirect('/api');
+
+// app.get('/', (req, res) => {
+//   res.redirect('/api');
+// });
+
+app.use(express.static(path.join(__dirname, 'build')));
+
+console.log(path.join(__dirname, 'build', 'index.html'));
+
+app.get(/^\/(?!api).*/, (req, res) => {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
-//db
 
+
+//db
 mongoose.connect(process.env.MONGO_URI)
   .then(()=>{
-    //console.log('SUCCESS:Database is connected\n');
     logger.info('SUCCESS:Database is connected'); //logger
-    //scheduller
-    startScheduler();
-
     //server runs
     const PORT = process.env.PORT;
     app.listen(PORT, () => {
       logger.info(`SUCCESS: Server is running on port: ${PORT}`); //logger
-      //console.log(`SUCCESS: Server is running on port: ${PORT}`);
     });
 
   })
   .catch((error)=>{
     logger.error("FAILED: to Connect Database"); //logger
-    //console.error("FAILED: to Connect Database");
   })

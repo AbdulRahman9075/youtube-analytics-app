@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const ChannelSchema = new mongoose.Schema({
-  channelId: { type: String, required: true, unique: true },
+  channelId: { type: String, required: true },
   title: String,
   description: String,
   customUrl: String,
@@ -19,6 +19,11 @@ const ChannelSchema = new mongoose.Schema({
 
 
 const SubscriptionsSchema = new mongoose.Schema({
+  userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,  // One user can have multiple analytics entries
+    },
   channels: [ChannelSchema]
 }, { timestamps: true });
 

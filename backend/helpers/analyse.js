@@ -1,11 +1,10 @@
 import Analytics from '../models/analyticsmodel.js';
 import logger from './errorHandler.js';
 
-
 const sortBySubscribedAt = (arr)=>{
   return arr.slice().sort((a, b) =>  a.subscribeAt - b.subscribeAt);
 }
-//test comment
+
 // Count channel Categories
 const calculateCategoryCounts = (channelArray)=> {
   const categoryCounts = {};
@@ -42,7 +41,7 @@ const getHighestCategory = (countsarray) => {
   return { category: maxCategory, count: maxCount };
 };
 
-const processNewChannels = async (currentChannels, previousChannels) => {
+const processNewChannels = async (userId, currentChannels, previousChannels) => {
 
   const sortedCurrent = sortBySubscribedAt(currentChannels);
   const sortedPrevious = sortBySubscribedAt(previousChannels);
@@ -51,18 +50,13 @@ const processNewChannels = async (currentChannels, previousChannels) => {
     ? sortedPrevious[sortedPrevious.length - 1].subscribeAt
     : new Date(0);
 
-  // Log the subscribe dates in current state
-  console.log("SubscribedAt dates in currentChannels:");
-  for (const ch of sortedCurrent) {
-    console.log(ch.title, "→", ch.subscribeAt.toISOString());
-  }
-
   const newChannels = sortedCurrent.filter(ch =>
       ch.subscribeAt > latestPrevDate
   );
 
-  console.log(`SUBSCRIBED: ${newChannels.length} new channels`);
+  console.log(`SUBSCRIBED: ${newChannels.length} new channels for ${userId}`);
 
+  
   // ---Handle new subscriptions ---
   for (const newCh of newChannels) {
     const relevantChannels = sortedCurrent.filter(ch =>
@@ -73,13 +67,14 @@ const processNewChannels = async (currentChannels, previousChannels) => {
     const categoryCounts = calculateCategoryCounts(relevantChannels);
     const topCategory = getHighestCategory(categoryCounts);
 
-    console.log("Preparing snapshot:");
-    console.log("Date:", newCh.subscribeAt);
-    console.log("Total subscriptions:", totalSubscriptions);
-    console.log("Top category:", topCategory);
-    console.log("Category breakdown:", categoryCounts);
+    // console.log("Preparing snapshot:");
+    // console.log("Date:", newCh.subscribeAt);
+    // console.log("Total subscriptions:", totalSubscriptions);
+    // console.log("Top category:", topCategory);
+    // console.log("Category breakdown:", categoryCounts);
 
     const snapshot = new Analytics({
+      userId,
       title: newCh.title,
       dp: newCh.profilephoto,
       date: newCh.subscribeAt,
@@ -92,8 +87,8 @@ const processNewChannels = async (currentChannels, previousChannels) => {
     });
 
     await snapshot.save();
-    console.log(`SUCCESS: Snapshot saved for new subscription at: ${newCh.subscribeAt}`);
   }
+  console.log(`SUCCESS: Saved snapshots for subscribe(s) for ${userId}`);
 
   // --- Handle unsubscribes ---
   const previousIds = new Set(previousChannels.map(ch => ch.channelId));
@@ -103,7 +98,7 @@ const processNewChannels = async (currentChannels, previousChannels) => {
   const unsubscribedChannelObjects = previousChannels.filter(ch =>
   unsubscribed.includes(ch.channelId)
   );
-  console.log(`UNSUBSCRIBED: ${unsubscribed.length} old channels`);
+  console.log(`UNSUBSCRIBED: ${unsubscribed.length} old channels for ${userId}`);
   const unsubscribedData = unsubscribedChannelObjects.map(ch => ({
   title: ch.title,
   dp: ch.profilephoto
@@ -112,12 +107,13 @@ const processNewChannels = async (currentChannels, previousChannels) => {
     const totalSubscriptions = currentChannels.length;
     const categoryCounts = calculateCategoryCounts(currentChannels);
     const topCategory = getHighestCategory(categoryCounts);
-    console.log("Preparing snapshot:");
-    console.log("Total unsubscriptions:", unsubscribed.length,unsubscribedChannelObjects.length);
-    console.log("Top category:", topCategory);
-    console.log("Category breakdown:", categoryCounts);
+    // console.log("Preparing snapshot:");
+    // console.log("Total unsubscriptions:", unsubscribed.length,unsubscribedChannelObjects.length);
+    // console.log("Top category:", topCategory);
+    // console.log("Category breakdown:", categoryCounts);
 
     const snapshot = new Analytics({
+      userId,
       date: new Date(), // timestamp of this fetch (unsub detection time)
       totalSubscriptions,
       topCategory: topCategory.category,
@@ -131,7 +127,7 @@ const processNewChannels = async (currentChannels, previousChannels) => {
 
     await snapshot.save();
 
-    console.log(`SUCCESS: Saved snapshot for unsubscribe(s) detected at: ${snapshot.date}`);
+    console.log(`SUCCESS: Saved snapshot for unsubscribe(s) for ${userId}`);
   }
 }
 

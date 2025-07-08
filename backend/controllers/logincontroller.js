@@ -1,38 +1,30 @@
-// IMPORTANT!!:  CHANGE LINE 78 and LINE 132 to route only when deploying
+// IMPORTANT!!:  UPDATE REDIRECT LINKS BEFORE DEPLOYMENT [IN OAUTHCALLBACK AND LOGOUT]
 
-import https from 'https';
 import url from 'url';
 import crypto from 'crypto';
-import fs from 'fs';
+import axios from "axios";
+import User from '../models/usermodel.js';
 import oauth2Client from '../helpers/oauth.js';
+import {generateToken} from '../helpers/jwt.js';
 import logger,{sendError} from '../helpers/errorHandler.js'
-const secret = JSON.parse(fs.readFileSync('../backend/private/clientsecrets.json', 'utf8'));
 /**
  * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI.
  * To get these credentials for your application, visit
  * https://console.cloud.google.com/apis/credentials.
  */
-// Access scopes for two non-Sign-In scopes: Read-only Drive activity and Google Calendar.
+// Access scopes
 const scopes = [
   'https://www.googleapis.com/auth/youtube.readonly',
-  'https://www.googleapis.com/auth/youtube.force-ssl'
+  'https://www.googleapis.com/auth/userinfo.email',
+  'https://www.googleapis.com/auth/userinfo.profile',
+  
 ];
 
-/* Global variable that stores user credential in this code example.
- * ACTION ITEM for developers:
- *   Store user's refresh token in your data store if
- *   incorporating this code into your real app.
- *   For more information on handling refresh tokens,
- *   see https://github.com/googleapis/google-api-nodejs-client#handling-refresh-tokens
- */
-let userCredential = null;
-const redirectToOAuth = async(req,res) => {
+const redirectToOAuth = async(req,res) => {  
     // Generate a secure random state value.
     const state = crypto.randomBytes(32).toString('hex');
-    // Store state in the session
-    req.session.state = state;
     
-    // Generate a url that asks permissions for the Drive activity and Google Calendar scope
+    // Generate a url that asks permissions
     const authorizationUrl = oauth2Client.generateAuthUrl({
         // 'online' (default) or 'offline' (gets refresh_token)
         access_type: 'offline',
@@ -41,95 +33,99 @@ const redirectToOAuth = async(req,res) => {
         scope: scopes,
         // Enable incremental authorization. Recommended as a best practice.
         include_granted_scopes: true,
-        // Include the state parameter to reduce the risk of CSRF attacks.
+        // Include the state parameter to reduce the risk of CSRF attacks.[CSRF CHECK HAS NOT BEEN IMPLEMENTED]
         state: state
     });
     res.redirect(authorizationUrl);
 }
 
-const recieveOAuthCallback = async (req, res) => {
+const recieveOAuthCallback = async (req, res) => {  // /api/oauth2callback
   // Handle the OAuth 2.0 server response
   const q = url.parse(req.url, true).query;
 
   if (q.error) {
-    //console.log('ERROR:' + q.error);
-    //return res.send('OAuth error: ' + q.error);
     return sendError(res,401,'OAuth error: ' + q.error,"OAUTH_FALIURE");
   }
 
-  if (q.state !== req.session.state) {
-    //console.log('ERROR: State mismatch. Possible CSRF attack');
-    //return res.end('State mismatch. Possible CSRF attack');
-    return sendError(res,403,'State mismatch. Possible CSRF attack',"STATE_MISMATCH_OR_CRSF");
-  }
+  //REQ.SESSION LOGIC IS NO LONGER USABLE SO THIS IS REDUNDANT
+  // if (q.state !== req.session.state) {
+  //   return sendError(res,403,'State mismatch. Possible CSRF attack',"STATE_MISMATCH_OR_CRSF");
+  // }
 
   try {
     // Exchange code for tokens
     const { tokens } = await oauth2Client.getToken(q.code);
     oauth2Client.setCredentials(tokens);
 
-    // Save tokens to session
-    req.session.tokens = tokens;
+    //REQ.SESSION LOGIC IS NO LONGER USABLE SO THIS IS REDUNDANT
+    // Save tokens to session and Save globally if still needed
+    // req.session.tokens = tokens;
+    // userCredential = tokens;
 
-    //Save globally if still needed
-    userCredential = tokens;
-    
-    // res.redirect('/api/home');   //testing in backend-only
-    res.redirect('http://localhost:3000/home'); //redirect to FRONTEND
-  
+    const userInfoRes = await axios.get('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${tokens.access_token}` }
+    });
+
+    const { id, email, name, picture } = userInfoRes.data;
+
+    //tokens.expires_in? new Date(Date.now() + tokens.expires_in * 1000): [REDUNDANT]
+    const tokenexpiry = tokens.expiry_date? new Date(tokens.expiry_date): new Date(Date.now() + 3600 * 1000); // fallback
+    // Save or update user in MongoDB
+    let user = await User.findOneAndUpdate(
+      { googleId: id },
+      {
+        googleId: id,
+        email,
+        name,
+        profilePhoto: picture,
+        accessToken: tokens.access_token,
+        refreshToken: tokens.refresh_token,
+        tokenExpiry: tokenexpiry
+      },
+      { new: true, upsert: true }
+    );
+
+    // Generate JWT for frontend to store
+    const jwtToken = generateToken(user);
+
+    //res.redirect(`http://localhost:3000/home?token=${jwtToken}`); //redirect to FRONTEND
+    res.redirect(`/home?token=${jwtToken}`); //url after build
   } catch (err) {
-    //console.error('ERROR: OAuth callback error:', err);
-
-    //res.status(500).send('Failed to handle OAuth callback');
     sendError(res,500,'Failed to handle OAuth callback','LOGIN_FALIURE')
   }
 };
 
-const revokeTokenandLogout = async (req, res) => {
-  const accessToken = req.session.tokens?.access_token;
+const revokeTokenandLogout = async (req, res) => { 
+  try{
+    
+    const userId = req.user?.userId;
+    
+    if (!userId) return sendError(res, 401, "Unauthorized", "NO_USER_ID");
 
-  if (!accessToken) {
-    return sendError(res,401,"No access token available. Please log in first.","NO_TOKENS")
-    //return res.status(400).send('No access token available. Please log in first.');
+    const user = await User.findById(userId);
+    if (!user || !user.accessToken) {
+      return sendError(res, 400, "No access token found", "NO_ACCESS_TOKEN");
+    }
+    
+    const response = await axios.post(
+        `https://oauth2.googleapis.com/revoke?token=${user.accessToken}`,
+        {},
+        { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+    );
+
+    user.accessToken = null;
+    user.refreshToken = null;
+    user.tokenExpiry = null;
+    await user.save();
+
+    logger.info(`SUCCESS: Access token revoked and tokens cleared for ${userId}`);
+
+    //res.redirect('http://localhost:3000/'); // Redirect to frontend logout page
+    res.redirect('/');  //url after build
   }
-
-  const postData = `token=${accessToken}`;
-
-  const postOptions = {
-    host: 'oauth2.googleapis.com',
-    port: 443,
-    path: '/revoke',
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': Buffer.byteLength(postData),
-    },
-  };
-
-  const revokeReq = https.request(postOptions, (googleRes) => {
-    googleRes.setEncoding('utf8');
-
-    googleRes.on('data', (chunk) => {
-      console.log('Revoke response:', chunk);
-    });
-
-    googleRes.on('end', () => {
-      req.session.destroy(() => {
-        logger.info("SUCCESS: Access token Revoked and Session Ended.");
-        res.redirect('http://localhost:3000/');  // REDIRECT TO FRONTEND LOGIN PAGE
-        
-      });
-    });
-  });
-
-  revokeReq.on('error', (error) => {
-    //console.error('Revoke request error:', error);
-    sendError(res,502,"Error revoking access token","REVOKE_FAILED");
-    //res.status(500).send('Error revoking access token');
-  });
-
-  revokeReq.write(postData);
-  revokeReq.end();
+  catch(err){
+    sendError(res,500,"FAILED: TO LOGOUT","LOGOUT_FALIURE");
+  }
 };
 
 export default {

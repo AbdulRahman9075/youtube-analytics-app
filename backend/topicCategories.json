@@ -27,6 +27,8 @@
     "Science and Technology"
   ],
   "Entertainment": [
+    "Entertainment",
+    "Humour",
     "Humor",
     "Movies",
     "Performing arts",
@@ -50,7 +52,6 @@
   "Lifestyle & Health": [
     "Lifestyle",
     "Fitness",
-    "Health",
     "Pets",
     "Beauty"
   ],
@@ -69,7 +70,12 @@
   "Education": [
     "Knowledge",
     "History",
-    "Society"
+    "Society",
+    "Health",
+    "Military",
+    "Religion",
+    "Hobby",
+    "Lifestyle (sociology)"
   ],
   "News & Politics": [
     "News",
@@ -78,11 +84,5 @@
   ],
   "Business":[
     "Business"
-  ],
-  "Religion": [
-    "Religion"
-  ],
-  "Military": [
-    "Military"
   ]
 }

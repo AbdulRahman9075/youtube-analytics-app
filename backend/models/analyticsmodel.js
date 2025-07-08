@@ -6,6 +6,11 @@ const CategoryCountSchema = new mongoose.Schema({
 }, { _id: false });
 
 const analyticsSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  }, 
   title: {
     type: String,
     required: function () {
