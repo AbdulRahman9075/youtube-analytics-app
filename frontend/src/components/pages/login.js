@@ -5,7 +5,7 @@ import Constant from '../../assets/constants.js';
 
 const Login = () => {
   const redirectToOauth = () => {
-    window.location.href = '/api';
+    window.location.href = Constant.backendDomain+'/api';
   };
 
   return (

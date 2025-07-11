@@ -1,7 +1,7 @@
 const linkColor = '#efbac5';
 const linkHoverColor = '#eaa3b2';
 const linkActiveColor = '#e0758c';
-
+const backendDomain = 'http://localhost:8080' || 'https://youtube-analytics.onrender.com';
 const CATEGORY_LIST = [
   "Music",
   "Gaming",
@@ -38,4 +38,4 @@ const CATEGORY_COLORMAP_LIGHT = {
   "Uncategorized": 'black'
 };
 
-export default {linkColor,linkActiveColor,linkHoverColor,CATEGORY_LIST,CATEGORY_COLORMAP_LIGHT}
+export default {linkColor,linkActiveColor,linkHoverColor,CATEGORY_LIST,CATEGORY_COLORMAP_LIGHT,backendDomain}

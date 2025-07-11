@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import SimpleBackdrop from '../utils/backdrop.js';
+import Constant from '../../assets/constants.js';
 
 const Logout = () => {
   useEffect(() => {
@@ -7,7 +8,7 @@ const Logout = () => {
       const token = localStorage.getItem('token');
 
       if (token) {
-        await fetch('/api/logout', {
+        await fetch(Constant.backendDomain+'/api/logout', {
           method: 'GET',
           headers: {
             Authorization: `Bearer ${token}`,

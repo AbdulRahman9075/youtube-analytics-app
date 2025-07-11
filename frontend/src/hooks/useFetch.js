@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react';
+import Constant from '../assets/constants.js';
 
 function useAbortableFetch(url,maxRetries=2,retryDelay=1000) {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  //add domain
+  url = Constant.backendDomain+url;
+  //console.log();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -25,7 +30,7 @@ function useAbortableFetch(url,maxRetries=2,retryDelay=1000) {
             const errorData = await response.json().catch(() => ({}));
             
             //log error to backend
-            fetch('/api/logerror', {
+            fetch(Constant.backendDomain+'/api/logerror', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json'
@@ -60,7 +65,7 @@ function useAbortableFetch(url,maxRetries=2,retryDelay=1000) {
               continue;
           }
 
-          fetch('/api/logerror', {
+          fetch(Constant.backendDomain+'/api/logerror', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

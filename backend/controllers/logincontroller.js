@@ -7,6 +7,7 @@ import User from '../models/usermodel.js';
 import oauth2Client from '../helpers/oauth.js';
 import {generateToken} from '../helpers/jwt.js';
 import logger,{sendError} from '../helpers/errorHandler.js'
+import { FRONTEND_BASE } from '../config.js';
 /**
  * To use OAuth2 authentication, we need access to a CLIENT_ID, CLIENT_SECRET, AND REDIRECT_URI.
  * To get these credentials for your application, visit
@@ -89,7 +90,7 @@ const recieveOAuthCallback = async (req, res) => {  // /api/oauth2callback
     const jwtToken = generateToken(user);
 
     //res.redirect(`http://localhost:3000/home?token=${jwtToken}`); //redirect to FRONTEND
-    res.redirect(`/home?token=${jwtToken}`); //url after build
+    res.redirect(`${FRONTEND_BASE}/home?token=${jwtToken}`); //url after build
   } catch (err) {
     sendError(res,500,'Failed to handle OAuth callback','LOGIN_FALIURE')
   }
@@ -121,7 +122,7 @@ const revokeTokenandLogout = async (req, res) => {
     logger.info(`SUCCESS: Access token revoked and tokens cleared for ${userId}`);
 
     //res.redirect('http://localhost:3000/'); // Redirect to frontend logout page
-    res.redirect('/');  //url after build
+    res.redirect(`${FRONTEND_BASE}/`);  //url after build
   }
   catch(err){
     sendError(res,500,"FAILED: TO LOGOUT","LOGOUT_FALIURE");

@@ -25,8 +25,9 @@ function Navbar() {
   if (loading){
     return <SimpleBackdrop/>;
   }
-  
-  
+  if(profilePhoto){
+    console.log('');
+  }
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
   };
@@ -158,7 +159,7 @@ function Navbar() {
                  },
                  padding: 0.8
                  }}>
-                <Avatar alt="App Logo" src={profilePhoto} /> {/*account image */}
+                <Avatar alt="Profile Photo" src={profilePhoto} /> {/*account image */}
               </IconButton>
             </Tooltip>
             <Menu

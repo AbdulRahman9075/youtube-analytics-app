@@ -1,4 +1,5 @@
 import { createContext, useState, useEffect, useContext } from 'react';
+import Constant from '../assets/constants.js';
 
 const UserContext = createContext();
 
@@ -17,7 +18,7 @@ export const UserProvider = ({ children }) => {
       }
 
       try {
-        const res = await fetch('api/user', {
+        const res = await fetch(Constant.backendDomain+'/api/user', {
           headers: { Authorization: `Bearer ${token}` }
         });
         
