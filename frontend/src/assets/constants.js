@@ -1,7 +1,15 @@
 const linkColor = '#efbac5';
 const linkHoverColor = '#eaa3b2';
 const linkActiveColor = '#e0758c';
-const backendDomain = 'http://localhost:8080' || 'https://youtube-analytics.onrender.com';
+
+let backendDomain;
+if(process.env.REACT_APP_ISPRODUCTION === '1'){
+  backendDomain = process.env.REACT_APP_API_BASE_DEV;
+}
+else{
+  backendDomain = process.env.REACT_APP_API_BASE_DEP;
+}
+
 const CATEGORY_LIST = [
   "Music",
   "Gaming",

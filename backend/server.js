@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { PORT,MONGO_URI } from './config.js';
+import { PORT,MONGO_URI,FRONTEND_BASE } from './config.js';
 import loginRoutes from './routes/login.js';
 import homeRoutes from './routes/home.js';
 import subscriptionRoutes from './routes/subscription.js';
@@ -15,7 +15,7 @@ const app = express();
 //middleware
 
 app.use(cors({
-  origin: process.env.FRONTEND_BASE, // Allow frontend domain
+  origin: FRONTEND_BASE, // Allow frontend domain
 }));
 
 app.use(express.json());
