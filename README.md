@@ -28,9 +28,11 @@ visualisations of various activity metrics.
 
 - Youtube Data API integration
 
+- User analytics data storage in a NoSql relational database
+  
 - Priority algorithm for category assignment to channels
 
-- Robust Error logging
+- Robust error logging
 
 ### Pages
 - Login page
@@ -48,7 +50,7 @@ visualisations of various activity metrics.
 
 
 ### Client-side features
-- Top Category based on subscription activity
+- Top category based on subscription activity
 
 <img width="418" height="113" alt="stats" src="https://github.com/user-attachments/assets/5b20bf4b-3617-449d-a1b6-e0217f0c9b66" />
 
@@ -58,7 +60,7 @@ visualisations of various activity metrics.
 <img width="939" height="270" alt="categorycounts" src="https://github.com/user-attachments/assets/1ecab8cc-86e5-4750-8c46-4c892f001420" />
 
 
-- Total Subscriptions Line Chart
+- Total subscriptions line chart
 
 <img width="947" height="293" alt="totalsubs" src="https://github.com/user-attachments/assets/8132d933-9697-4eab-ad8a-ec2d0e777ca4" />
 
@@ -83,7 +85,7 @@ visualisations of various activity metrics.
 <img width="527" height="237" alt="filterbyproperty" src="https://github.com/user-attachments/assets/0f20da7b-cad3-428d-8b9a-ada9cf1422e6" />
 
 
-- Google Profile Picture Avatar
+- Google profile picture avatar
 
 <img width="286" height="238" alt="profilepic" src="https://github.com/user-attachments/assets/97287f27-0312-4240-8a38-49cb3da18c28" />
 
